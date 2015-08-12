@@ -42,21 +42,46 @@ namespace TesteImposto
             table.Columns.Add(new DataColumn("Codigo do produto", typeof(string)));
             table.Columns.Add(new DataColumn("Valor", typeof(decimal)));
             table.Columns.Add(new DataColumn("Brinde", typeof(bool)));
-                     
+            table.Columns["Brinde"].DefaultValue = false;         
             return table;
+        }
+
+        private void LimparTela()
+        {
+            txtEstadoOrigem.Clear();
+            txtEstadoDestino.Clear();
+            textBoxNomeCliente.Clear();
+            dataGridViewPedidos.DataSource = null;
+            dataGridViewPedidos.AutoGenerateColumns = true;
+            dataGridViewPedidos.DataSource = GetTablePedidos();
+            ResizeColumns();
         }
 
         private void buttonGerarNotaFiscal_Click(object sender, EventArgs e)
         {            
             NotaFiscalService service = new NotaFiscalService();
             pedido.EstadoOrigem = txtEstadoOrigem.Text;
+            
+            if (!pedido.EstadoOrigemValido()) 
+            {
+                MessageBox.Show("Estado origem inválido para o pedido.");
+                return;
+            }
+
             pedido.EstadoDestino = txtEstadoDestino.Text;
+            if (!pedido.EstadoDestinoValido())
+            {
+                MessageBox.Show("Estado destino inválido para o pedido.");
+                return;
+            }
+            
             pedido.NomeCliente = textBoxNomeCliente.Text;
 
             DataTable table = (DataTable)dataGridViewPedidos.DataSource;
 
             foreach (DataRow row in table.Rows)
             {
+                
                 pedido.ItensDoPedido.Add(
                     new PedidoItem()
                     {
@@ -69,6 +94,8 @@ namespace TesteImposto
 
             service.GerarNotaFiscal(pedido);
             MessageBox.Show("Operação efetuada com sucesso");
+            LimparTela();
         }
+
     }
 }

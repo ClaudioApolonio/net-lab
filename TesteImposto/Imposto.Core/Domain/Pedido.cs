@@ -19,5 +19,17 @@ namespace Imposto.Core.Domain
         {
             ItensDoPedido = new List<PedidoItem>();
         }
+
+        public bool EstadoOrigemValido()
+        {            
+            return (this.EstadoOrigem == "SP") || (this.EstadoOrigem == "MG");            
+        }
+
+        public bool EstadoDestinoValido()
+        {
+            return (this.EstadoDestino == "RJ") || (this.EstadoDestino == "PE") || (this.EstadoDestino == "MG") || (this.EstadoDestino == "PB")
+                   || (this.EstadoDestino == "PR") || (this.EstadoDestino == "PI") || (this.EstadoDestino == "RO") || (this.EstadoDestino == "SE")
+                   || (this.EstadoDestino == "TO") || (this.EstadoDestino == "PA");            
+        }
     }
 }
